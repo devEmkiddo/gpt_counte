@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Counter DApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Counter DApp</h1>
+    <p id="count">Loading...</p>
+    <button onclick="increment()">Increment</button>
+    <button onclick="decrement()">Decrement</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script>
+        const web3 = new Web3('HTTP://127.0.0.1:7545'); // Use your Ethereum node URL
+        const contractAddress = '0xd3b9f6e498564CBFFb1Cb5EA34BeA12b380D6a07'; // Replace with your contract address
+        const contractABI = [
+	{
+		"inputs": [],
+		"name": "decrement",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "increment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "count",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]; // Replace with your contract ABI
+
+        const contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+
+        async function getCount() {
+            const count = await contractInstance.methods.getCount().call();
+            document.getElementById('count').innerText = 'Count: ' + count;
+        }
+
+        async function increment() {
+            await contractInstance.methods.increment().send({ from: '0x799b112f254F6Fb702a1B321EeDef5F876196cE1' }); // Replace with your Ethereum address
+            getCount();
+        }
+
+        async function decrement() {
+            await contractInstance.methods.decrement().send({ from: '0x799b112f254F6Fb702a1B321EeDef5F876196cE1' }); // Replace with your Ethereum address
+            getCount();
+        }
+
+        getCount(); // Get current count
+    </script>
+</body>
+</html>
